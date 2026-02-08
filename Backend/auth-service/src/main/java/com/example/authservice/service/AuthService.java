@@ -24,8 +24,13 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
     }
 
-   
+    // ================= REGISTER =================
     public User register(RegisterRequest request) {
+
+     
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new RuntimeException("Username already exists");
+        }
 
         User user = new User();
         user.setUsername(request.getUsername());
@@ -35,7 +40,7 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-  
+    // ================= LOGIN =================
     public AuthResponse login(LoginRequest request) {
 
         User dbUser = userRepository.findByUsername(request.getUsername())
@@ -45,13 +50,23 @@ public class AuthService {
             throw new RuntimeException("Invalid username or password");
         }
 
-        String token = jwtUtil.generateToken(dbUser.getUsername(), dbUser.getRole());
+        String token = jwtUtil.generateToken(
+                dbUser.getUsername(),
+                dbUser.getRole()
+        );
 
-        return new AuthResponse(token, dbUser.getUsername(), dbUser.getRole());
+        return new AuthResponse(
+                token,
+                dbUser.getUsername(),
+                dbUser.getRole()
+        );
     }
 
-   
+    // ================= TOKEN =================
     public String generateToken(User user) {
-        return jwtUtil.generateToken(user.getUsername(), user.getRole());
+        return jwtUtil.generateToken(
+                user.getUsername(),
+                user.getRole()
+        );
     }
 }

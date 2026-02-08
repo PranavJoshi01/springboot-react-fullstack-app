@@ -1,4 +1,4 @@
-package com.example.authservice.security;
+package com.project.mainservice.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -19,12 +19,12 @@ public class JwtUtil {
             @Value("${jwt.secret}") String secret,
             @Value("${jwt.expiration}") long expiration) {
 
-      
+
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.expiration = expiration;
     }
 
- 
+
     public String generateToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username)

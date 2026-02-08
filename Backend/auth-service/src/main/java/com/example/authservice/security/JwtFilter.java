@@ -19,12 +19,14 @@ public class JwtFilter extends OncePerRequestFilter {
         this.jwtUtil = jwtUtil;
     }
 
-    //  THIS IS CRITICAL
+   
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
+        System.out.println("JwtFilter path = " + path);
         return path.startsWith("/auth/");
     }
+
 
     @Override
     protected void doFilterInternal(
@@ -58,5 +60,10 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+        
+        
+        
     }
+    
+    
 }
