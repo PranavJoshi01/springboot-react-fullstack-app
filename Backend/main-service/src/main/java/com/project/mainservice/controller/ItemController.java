@@ -2,6 +2,7 @@ package com.project.mainservice.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,14 +15,13 @@ public class ItemController {
 
     private final ItemService itemService;
 
- 
     public ItemController(ItemService itemService) {
         this.itemService = itemService;
     }
 
-   
+    // 🔹 CREATE ITEM
     @PostMapping
-    public Item createItem(@RequestBody Item item) {
+    public ResponseEntity<Item> createItem(@RequestBody Item item) {
 
         // Extract logged-in username from JWT
         String username = SecurityContextHolder
@@ -29,33 +29,36 @@ public class ItemController {
                 .getAuthentication()
                 .getName();
 
-        return itemService.createItem(item, username);
+        Item savedItem = itemService.createItem(item, username);
+        return ResponseEntity.ok(savedItem);
     }
 
-   
+    // 🔹 GET ALL ITEMS
     @GetMapping
-    public List<Item> getAllItems() {
-        return itemService.getAllItems();
+    public ResponseEntity<List<Item>> getAllItems() {
+        return ResponseEntity.ok(itemService.getAllItems());
     }
 
-    
+    // 🔹 GET ITEM BY ID
     @GetMapping("/{id}")
-    public Item getItemById(@PathVariable Long id) {
-        return itemService.getItemById(id);
+    public ResponseEntity<Item> getItemById(@PathVariable Long id) {
+        return ResponseEntity.ok(itemService.getItemById(id));
     }
 
-   
+    // 🔹 UPDATE ITEM
     @PutMapping("/{id}")
-    public Item updateItem(
+    public ResponseEntity<Item> updateItem(
             @PathVariable Long id,
             @RequestBody Item item) {
 
-        return itemService.updateItem(id, item);
+        Item updatedItem = itemService.updateItem(id, item);
+        return ResponseEntity.ok(updatedItem);
     }
 
-   
+    // 🔹 DELETE ITEM
     @DeleteMapping("/{id}")
-    public void deleteItem(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
         itemService.deleteItem(id);
+        return ResponseEntity.noContent().build(); // 204 No Content
     }
 }

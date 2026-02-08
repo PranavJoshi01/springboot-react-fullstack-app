@@ -13,39 +13,49 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
 
-    // Constructor Injection (BEST PRACTICE)
     public ItemService(ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
     }
 
-    // CREATE
+ 
     public Item createItem(Item item, String username) {
         item.setCreatedBy(username);
         item.setCreatedAt(LocalDateTime.now());
         return itemRepository.save(item);
     }
 
-    // READ (ALL)
+  
     public List<Item> getAllItems() {
         return itemRepository.findAll();
     }
 
-    // READ (BY ID)
+
     public Item getItemById(Long id) {
         return itemRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Item not found"));
+                .orElseThrow(() ->
+                        new RuntimeException("Item not found with id: " + id)
+                );
     }
 
-    // UPDATE
+
     public Item updateItem(Long id, Item updatedItem) {
         Item existingItem = getItemById(id);
-        existingItem.setName(updatedItem.getName());
-        existingItem.setDescription(updatedItem.getDescription());
+
+       
+        if (updatedItem.getName() != null) {
+            existingItem.setName(updatedItem.getName());
+        }
+
+        if (updatedItem.getDescription() != null) {
+            existingItem.setDescription(updatedItem.getDescription());
+        }
+
         return itemRepository.save(existingItem);
     }
 
-    // DELETE
+   
     public void deleteItem(Long id) {
-        itemRepository.deleteById(id);
+        Item existingItem = getItemById(id);
+        itemRepository.delete(existingItem);
     }
 }
